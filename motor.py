@@ -17,14 +17,24 @@ RESPOSTAS = {"s": 1.0, "sim": 1.0, "n": 0.0, "nao": 0.0, "não": 0.0, "t": 0.5, 
 PULAR = {"?", "ns", "nao sei", "não sei"}
 
 
+
 def carregar_base(caminho="base_conhecimento.json"):
-    """Lê a base de conhecimento de um arquivo JSON (base extensível)."""
-    with open(Path(caminho), encoding="utf-8") as arq:
+    """Lê a base de conhecimento de um arquivo JSON."""
+    caminho_arquivo = Path(caminho)
+
+    if not caminho_arquivo.is_absolute():
+        caminho_arquivo = Path(__file__).resolve().parent / caminho_arquivo
+
+    with open(caminho_arquivo, encoding="utf-8") as arq:
         base = json.load(arq)
+
     ids = [r["id"] for r in base["regras"]]
+
     if len(ids) != len(set(ids)):
         raise ValueError("Base inválida: existem regras com id repetido.")
+
     return base
+
 
 
 def combinar(cf1, cf2):
